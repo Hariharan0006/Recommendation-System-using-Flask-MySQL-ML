@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction Results</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            --background: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-dark: #064e3b;
+            --text-light: #4b5563;
+            --border: #a7f3d0;
+            --header-bg: #15803d;
+            --table-bg: #7bd1c4; /* Your requested full table color */
+            --radius: 16px;
+            --shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", "Segoe UI", sans-serif;
+            background: var(--background);
+            padding: 50px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 650px;
+        }
+
+        /* Header */
+        .table thead {
+            background: var(--header-bg);
+            color: white;
+        }
+
+        .table th {
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Entire table body background */
+        .table tbody td {
+            background-color: var(--table-bg);
+            padding: 14px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            color: #033c37; /* Dark text for readability */
+            font-weight: 600;
+        }
+
+        /* Hover Effect */
+        .table tbody tr:hover td {
+            background-color: #5cc7b6;
+            transition: background 0.2s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2 class="title">Prediction Results</h2>
+        <p class="subtitle">
+            Below are the generated recommendations based on your selected input.
+        </p>
+
+
+        <div class="table-container">
+            <table class="table">
+                {{ Y | safe }}
+                {{ Z | safe }}
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

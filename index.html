@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recommendation Engine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    /* ===============================
+       1. DESIGN SYSTEM (Green Theme)
+    =============================== */
+    :root {
+      --primary: #16a34a;
+      --primary-hover: #15803d;
+      --background: #f0fdf4;
+      --card-bg: #ffffff;
+      --text-dark: #064e3b;
+      --text-light: #4b5563;
+      --border: #bbf7d0;
+      --focus-ring: rgba(22, 163, 74, 0.25);
+      --radius: 12px;
+      --shadow: 0 12px 35px rgba(22, 163, 74, 0.08);
+    }
+
+    /* ===============================
+       2. RESET
+    =============================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", "Segoe UI", sans-serif;
+      background: var(--background);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* ===============================
+       3. CARD LAYOUT
+    =============================== */
+    .card {
+      width: 100%;
+      max-width: 600px;
+      background: var(--card-bg);
+      padding: 45px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(22, 163, 74, 0.12);
+    }
+
+    /* ===============================
+       4. HEADER
+    =============================== */
+    .card-header {
+      margin-bottom: 30px;
+    }
+
+    .card-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      font-size: 15px;
+      color: var(--text-light);
+    }
+
+    /* ===============================
+       5. FORM COMPONENTS
+    =============================== */
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    select,
+    input[type="number"] {
+      width: 100%;
+      padding: 13px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      font-size: 14px;
+      background: #ffffff;
+      transition: all 0.2s ease;
+    }
+
+    select:focus,
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--focus-ring);
+    }
+
+    /* ===============================
+       6. BUTTON COMPONENT
+    =============================== */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    /* ===============================
+       7. RESPONSIVE
+    =============================== */
+    @media (max-width: 600px) {
+      .card {
+        padding: 30px;
+      }
+
+      .card-title {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Recommendation Engine</h1>
+      <p class="card-subtitle">
+        Select a movie to receive personalized recommendations.
+      </p>
+    </div>
+
+    <form action="/guest" method="post">
+
+      <div class="form-group">
+        <label for="mn">Select a Movie</label>
+        <select name="mn" id="mn">
+          {% for movie in movies_list %}
+          <option value="{{ movie }}">{{ movie }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="tp">Number of Recommendations</label>
+        <input type="number" name="tp" id="tp"
+               placeholder="Enter number (e.g., 5)" min="1">
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        Get Recommendations
+      </button>
+
+    </form>
+  </div>
+
+</body>
+</html>
