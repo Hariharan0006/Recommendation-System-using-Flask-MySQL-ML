@@ -1,7 +1,8 @@
 # Movie Recommendation System
 
-[Home Page](1.png)
-[Recommendation Result](2.png)
+![Home Page](1.png)
+![Recommendation Result](2.png)
+
 
 This project is a content-based recommendation system that suggests movies
 based on similarity between movie descriptions. The system is built using
@@ -65,4 +66,5 @@ Data is stored in a MySQL database table.
 
 ## Author
 Ari
+
 
