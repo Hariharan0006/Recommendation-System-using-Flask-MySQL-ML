@@ -6,8 +6,7 @@ import joblib
 from sqlalchemy import create_engine
 from sklearn.metrics.pairwise import cosine_similarity
 
-
-# Initialize Flask application FIRST
+# Initialize Flask application
 app = Flask(__name__)
 
 # Database connection
@@ -18,44 +17,46 @@ if not DATABASE_URL:
 
 engine = create_engine(DATABASE_URL)
 
-# SQL query
-sql = 'select * from movies'
-
-anime = pd.read_sql_query(sql, engine)
-
-anime["genre"] = anime["genre"].fillna(" ")
-
-movies_list = anime['name'].to_list()
-
+# Load ML model
 tfidf = joblib.load('matrix')
 
-tfidf_matrix = tfidf.transform(anime.genre)
+# Global variables (loaded after DB connection)
+anime = None
+movies_list = None
+cosine_sim_matrix = None
+anime_index = None
 
-cosine_sim_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
-anime_index = pd.Series(anime.index, index=anime['name']).drop_duplicates()
+def load_data():
+    global anime, movies_list, cosine_sim_matrix, anime_index
+
+    sql = "SELECT * FROM movies"
+    anime = pd.read_sql_query(sql, engine)
+
+    anime["genre"] = anime["genre"].fillna(" ")
+
+    movies_list = anime['name'].to_list()
+
+    tfidf_matrix = tfidf.transform(anime.genre)
+    cosine_sim_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
+
+    anime_index = pd.Series(anime.index, index=anime['name']).drop_duplicates()
 
 
 def get_recommendations(Name, topN):
-
     anime_id = anime_index[Name]
 
     cosine_scores = list(enumerate(cosine_sim_matrix[anime_id]))
-
     cosine_scores = sorted(cosine_scores, key=lambda x: x[1], reverse=True)
 
     cosine_scores_N = cosine_scores[0:topN + 1]
 
     anime_idx = [i[0] for i in cosine_scores_N]
-
     anime_scores = [i[1] for i in cosine_scores_N]
 
     anime_similar_show = pd.DataFrame(columns=["name", "Score"])
-
     anime_similar_show["name"] = anime.loc[anime_idx, "name"]
-
     anime_similar_show["Score"] = anime_scores
-
     anime_similar_show.reset_index(inplace=True)
 
     return anime_similar_show.iloc[1:, ]
@@ -63,19 +64,28 @@ def get_recommendations(Name, topN):
 
 @app.route('/')
 def home():
+    if movies_list is None:
+        load_data()
     return render_template("index.html", movies_list=movies_list)
 
 
 @app.route('/guest', methods=["POST"])
 def Guest():
+    if movies_list is None:
+        load_data()
 
     mn = request.form["mn"]
     tp = request.form["tp"]
 
     top_n = get_recommendations(mn, topN=int(tp))
 
-    top_n.to_sql('top_10', con=engine, if_exists='replace',
-                 chunksize=1000, index=False)
+    top_n.to_sql(
+        'top_10',
+        con=engine,
+        if_exists='replace',
+        chunksize=1000,
+        index=False
+    )
 
     html_table = top_n.to_html(classes='table table-striped')
 
