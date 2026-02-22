@@ -7,7 +7,12 @@ from sqlalchemy import create_engine  # Library for connecting to databases
 from sklearn.metrics.pairwise import cosine_similarity  # Library for calculating similarity scores
 from urllib.parse import quote
 # Database connection details (replace with your actual credentials)
+import os
 
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+    
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if not DATABASE_URL:
@@ -151,4 +156,5 @@ def Guest():
 if __name__ == '__main__':
     # Run the Flask development server in debug mode
     app.run(debug=True)
+
 
