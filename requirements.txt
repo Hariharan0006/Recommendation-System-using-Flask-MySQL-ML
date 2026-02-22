@@ -3,5 +3,5 @@ pandas
 scikit-learn
 joblib
 SQLAlchemy
-pymysql
 psycopg2-binary
+
