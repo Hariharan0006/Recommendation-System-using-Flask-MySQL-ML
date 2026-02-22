@@ -1,4 +1,5 @@
 # Import necessary libraries
+import os
 from flask import Flask, render_template, request  # Web framework for building the app
 import pandas as pd  # Data manipulation library
 import joblib  # Library for saving and loading machine learning models
@@ -6,13 +7,13 @@ from sqlalchemy import create_engine  # Library for connecting to databases
 from sklearn.metrics.pairwise import cosine_similarity  # Library for calculating similarity scores
 from urllib.parse import quote
 # Database connection details (replace with your actual credentials)
-engine = create_engine(
-    "mysql+pymysql://{user}:{pw}@localhost/{db}".format(
-        user="root",
-        pw=quote("root123"),
-        db="unsup_db"
-    )
-)
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is not set!")
+
+engine = create_engine(DATABASE_URL)
 # SQL query to retrieve anime data from the database
 sql = 'select * from movies'
 
@@ -150,3 +151,4 @@ def Guest():
 if __name__ == '__main__':
     # Run the Flask development server in debug mode
     app.run(debug=True)
+
