@@ -10,15 +10,14 @@ from urllib.parse import quote
 
 # Initialize Flask application FIRST
 app = Flask(__name__)
-
-
 # Database connection
-DATABASE_URL = os.environ.get(r"mysql+pymysql://ds_db_6z7f_user:q2BMog4g3lqLHxUC4YnH6Mkztf8x2use@host:3306/ds_db_6z7f")
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL is not set!")
 
 engine = create_engine(DATABASE_URL)
+
 
 
 # SQL query
@@ -112,4 +111,5 @@ def Guest():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
 
