@@ -5,11 +5,11 @@ import pandas as pd
 import joblib
 from sqlalchemy import create_engine
 from sklearn.metrics.pairwise import cosine_similarity
-from urllib.parse import quote
 
 
 # Initialize Flask application FIRST
 app = Flask(__name__)
+
 # Database connection
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
@@ -17,8 +17,6 @@ if not DATABASE_URL:
     raise ValueError("DATABASE_URL is not set!")
 
 engine = create_engine(DATABASE_URL)
-
-
 
 # SQL query
 sql = 'select * from movies'
@@ -70,46 +68,48 @@ def home():
 
 @app.route('/guest', methods=["POST"])
 def Guest():
-    if request.method == 'POST':
 
-        mn = request.form["mn"]
-        tp = request.form["tp"]
+    mn = request.form["mn"]
+    tp = request.form["tp"]
 
-        top_n = get_recommendations(mn, topN=int(tp))
+    top_n = get_recommendations(mn, topN=int(tp))
 
-        top_n.to_sql('top_10', con=engine, if_exists='replace', chunksize=1000, index=False)
+    top_n.to_sql('top_10', con=engine, if_exists='replace',
+                 chunksize=1000, index=False)
 
-        html_table = top_n.to_html(classes='table table-striped')
+    html_table = top_n.to_html(classes='table table-striped')
 
-        return render_template("data.html", Y="Results have been saved in your database", Z=f"""
-            <style>
-                .table {{
-                    width: 50%;
-                    margin: 0 auto;
-                    border-collapse: collapse; 
-                }}
-                .table thead {{
-                    background-color: #39648f;
-                }}
-                .table th, .table td {{
-                    border: 1px solid #ddd;
-                    padding: 8px;
-                    text-align: center;
-                }}
-                .table td {{
-                    background-color: #5e617d;
-                }}
-                .table tbody th {{
-                    background-color: #ab2c3f;
-                }}
-            </style>
-            {html_table}
-        """)
+    return render_template(
+        "data.html",
+        Y="Results have been saved in your database",
+        Z=f"""
+        <style>
+            .table {{
+                width: 50%;
+                margin: 0 auto;
+                border-collapse: collapse;
+            }}
+            .table thead {{
+                background-color: #39648f;
+            }}
+            .table th, .table td {{
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }}
+            .table td {{
+                background-color: #5e617d;
+            }}
+            .table tbody th {{
+                background-color: #ab2c3f;
+            }}
+        </style>
+        {html_table}
+        """
+    )
 
 
-# ✅ Render Compatible Run Block (ONLY ONE)
+# Render compatible run block
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
-
-
